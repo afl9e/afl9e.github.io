@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AFL 9/E — Panosu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <!-- Aurora Background Layers -->
+  <div class="aurora a1"></div>
+  <div class="aurora a2"></div>
+  <div class="aurora a3"></div>
+
+  <!-- Header -->
+  <header class="hdr">
+    <div class="brand">
+      <div class="logo">AFL <span>9/E</span></div>
+      <div class="tagline">Aksu Fen Lisesi • Haftalık Ödev & Bilgi Panosu</div>
+    </div>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="tasks">📘 Ödevler</button>
+      <button class="tab" data-tab="schedule">📅 Ders Programı</button>
+      <button class="tab" data-tab="weather">🌤 Hava Durumu</button>
+    </nav>
+
+    <div class="actions">
+      <button id="adminBtn" class="btn ghost">Admin Girişi</button>
+      <button id="addBtn"   class="btn accent">+ Ödev Ekle</button>
+    </div>
+  </header>
+
+  <!-- Top Stats -->
+  <section class="wrap">
+    <div class="stats">
+      <div class="stat">
+        <span>Toplam Ödev</span>
+        <strong id="statTasks">0</strong>
+      </div>
+      <div class="stat">
+        <span>Toplam Ziyaretçi</span>
+        <strong id="statVisitors">0</strong>
+      </div>
+      <div class="stat hint">
+        <span>İpucu</span>
+        <strong>Hover’da Parlayan Kartlar</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="wrap">
+    <!-- Ödevler -->
+    <section id="tasks" class="tabpage active">
+      <div class="days" id="daysGrid"></div>
+    </section>
+
+    <!-- Ders Programı -->
+    <section id="schedule" class="tabpage">
+      <div class="row split">
+        <h2>Haftalık Ders Programı</h2>
+        <div id="scheduleTools" class="row gap hidden">
+          <button id="exportSchedule" class="btn ghost">Dışa Aktar (JSON)</button>
+          <label class="btn ghost upload">
+            JSON Yükle
+            <input type="file" id="importSchedule" accept="application/json">
+          </label>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="scheduleTable"></table>
+      </div>
+      <p class="muted sm">* Program düzenleme yalnızca admin girişinden sonra aktiftir.</p>
+    </section>
+
+    <!-- Hava Durumu -->
+    <section id="weather" class="tabpage">
+      <div class="row split">
+        <h2>Hava Durumu • Aksu Fen Lisesi</h2>
+        <div class="row gap">
+          <input id="cityInput" class="inp" placeholder="Şehir adı (örn: Antalya)" />
+          <button id="reloadWeather" class="btn ghost">Yenile</button>
+        </div>
+      </div>
+      <p id="weatherStatus" class="muted">5 günlük tahmin yükleniyor…</p>
+      <div id="weatherGrid" class="weather-grid"></div>
+      <p class="muted sm">Kaynak: Open-Meteo • Kartlara hover yapınca glow artar ✨</p>
+    </section>
+  </main>
+
+  <!-- Modal: Ödev Ekle/Düzenle -->
+  <div id="taskModal" class="modal">
+    <div class="card modal-card">
+      <div class="modal-head">
+        <h3 id="modalTitle">Yeni Ödev</h3>
+        <button id="closeModal" class="btn icon ghost" title="Kapat">✕</button>
+      </div>
+      <div class="form">
+        <label>Gün</label>
+        <select id="daySelect" class="inp">
+          <option value="0">Pazartesi</option>
+          <option value="1">Salı</option>
+          <option value="2">Çarşamba</option>
+          <option value="3">Perşembe</option>
+          <option value="4">Cuma</option>
+          <option value="5">Proje</option>
+        </select>
+
+        <label>Ders / Konu</label>
+        <input id="subject" class="inp" placeholder="Matematik — Üslü Sayılar" />
+
+        <label>Açıklama</label>
+        <textarea id="desc" class="inp" placeholder="Kitap s.45–48, 1–8 arası"></textarea>
+
+        <label>Etiket (opsiyonel)</label>
+        <input id="tag" class="inp" placeholder="Sınav, Ödev, Proje…" />
+      </div>
+
+      <div class="modal-actions">
+        <button id="saveTask" class="btn accent">Kaydet</button>
+        <button id="cancelTask" class="btn ghost">İptal</button>
+      </div>
+      <p id="modalHint" class="muted sm"></p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <footer class="ft">
+    © 202 5 AFL 9/E • Aksu Fen Lisesi — Aurora tasarım • Inter font
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
