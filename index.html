@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AFL 9/E — Ödev Panosu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0a0a12;
+      --card:#111624;
+      --accent1:#06b6d4;
+      --accent2:#7c3aed;
+      --muted:#9ca3af;
+      --text:#e8edf5;
+      --radius:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Inter',sans-serif;
+      background:radial-gradient(circle at 20% 30%,rgba(124,58,237,.15),transparent 70%),
+                 radial-gradient(circle at 80% 70%,rgba(6,182,212,.15),transparent 70%),#0a0a12;
+      color:var(--text);
+      min-height:100vh;
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+      animation: aurora 10s ease-in-out infinite alternate;
+    }
+    @keyframes aurora{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(40deg)}}
+
+    header{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:20px 28px;border-bottom:1px solid rgba(255,255,255,0.05);
+      background:rgba(0,0,0,0.3);backdrop-filter:blur(8px);
+      position:sticky;top:0;z-index:10;
+    }
+    .logo{font-weight:800;font-size:20px;letter-spacing:0.5px;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    nav{display:flex;gap:14px}
+    nav button{
+      background:none;border:none;color:var(--muted);font-weight:600;font-size:15px;cursor:pointer;padding:8px 12px;border-radius:var(--radius);transition:.25s;
+    }
+    nav button.active,nav button:hover{color:var(--text);background:rgba(255,255,255,0.06)}
+
+    .content{max-width:1200px;margin:40px auto;padding:0 20px}
+    section{display:none;animation:fade .4s ease}
+    section.active{display:block;}
+    @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+    .stats{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+    .stat{
+      background:rgba(255,255,255,0.03);padding:12px 16px;border-radius:var(--radius);
+      font-weight:600;color:var(--muted);min-width:160px;text-align:center;
+      box-shadow:0 0 15px rgba(255,255,255,0.05);
+    }
+
+    /* ödev kutuları */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;}
+    .task{
+      background:var(--card);border-radius:var(--radius);
+      padding:14px 16px;box-shadow:0 0 12px rgba(0,0,0,0.4);
+      transition:.25s;border:1px solid rgba(255,255,255,0.05);
+    }
+    .task:hover{transform:translateY(-4px);box-shadow:0 0 25px rgba(124,58,237,.4);}
+    .task h3{margin:0 0 6px 0;font-size:17px;color:var(--accent1);}
+    .task p{color:var(--muted);font-size:14px;line-height:1.4;}
+    .task small{display:block;margin-top:6px;color:var(--muted);font-size:12px;}
+    .controls{display:flex;gap:8px;margin-top:10px}
+    .controls button{
+      background:rgba(255,255,255,0.05);border:none;color:var(--text);
+      padding:6px 10px;border-radius:8px;cursor:pointer;transition:.2s;
+    }
+    .controls button:hover{background:var(--accent1);color:#02131f;}
+
+    /* add modal */
+    .modal{
+      position:fixed;inset:0;background:rgba(0,0,0,0.6);
+      display:none;align-items:center;justify-content:center;z-index:30;
+    }
+    .modal.active{display:flex;}
+    .modal-content{
+      background:#111624;border-radius:var(--radius);
+      padding:24px;max-width:420px;width:90%;
+      box-shadow:0 0 30px rgba(124,58,237,0.3);
+    }
+    .modal-content input,textarea{
+      width:100%;margin:8px 0;padding:8px 10px;
+      border-radius:8px;border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.03);color:var(--text);
+      font-family:inherit;
+    }
+    .modal-content button{
+      background:var(--accent1);color:#02131f;border:none;
+      padding:8px 12px;border-radius:8px;cursor:pointer;
+      font-weight:600;margin-top:10px;
+    }
+
+    /* ders programı */
+    table{width:100%;border-collapse:collapse;margin-top:20px;font-size:14px;}
+    th,td{border:1px solid rgba(255,255,255,0.08);padding:10px;text-align:center;}
+    th{background:rgba(255,255,255,0.05)}
+    td{background:rgba(255,255,255,0.02)}
+    td.editable:hover{background:rgba(124,58,237,0.1);cursor:pointer}
+
+    /* hava durumu */
+    .weather-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-top:20px}
+    .weather-card{
+      background:var(--card);padding:14px;border-radius:var(--radius);
+      text-align:center;box-shadow:0 0 20px rgba(6,182,212,.25);transition:.3s;
+    }
+    .weather-card:hover{transform:translateY(-3px);box-shadow:0 0 35px rgba(6,182,212,.4);}
+    .weather-card img{width:48px;height:48px}
+    .weather-card h4{margin:6px 0;color:var(--accent1);}
+    .weather-card p{color:var(--muted);font-size:13px;margin:2px 0}
+    footer{text-align:center;padding:20px;color:var(--muted);font-size:13px;margin-top:40px;}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">AFL 9/E</div>
+    <nav>
+      <button class="active" data-tab="tasks">Ödevler</button>
+      <button data-tab="schedule">Ders Programı</button>
+      <button data-tab="weather">Hava Durumu</button>
+      <button id="addBtn">+ Ödev Ekle</button>
+    </nav>
+  </header>
+
+  <div class="content">
+    <div class="stats">
+      <div class="stat" id="statTasks">Toplam Ödev: 0</div>
+      <div class="stat" id="statVisitors">Toplam Ziyaretçi: 0</div>
+    </div>
+
+    <section id="tasks" class="active">
+      <div class="grid" id="taskGrid"></div>
+    </section>
+
+    <section id="schedule">
+      <table id="scheduleTable"></table>
+    </section>
+
+    <section id="weather">
+      <div id="weatherStatus">Yükleniyor...</div>
+      <div class="weather-grid" id="weatherGrid"></div>
+    </section>
+  </div>
+
+  <footer>© 2025 AFL 9/E — Hazırlayan: Ömer Kaan Yılmaz</footer>
+
+  <!-- modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h3>Yeni Ödev Ekle</h3>
+      <input id="subject" placeholder="Ders / Konu">
+      <textarea id="desc" placeholder="Açıklama"></textarea>
+      <button id="saveTask">Kaydet</button>
+    </div>
+  </div>
+
+  <script>
+    const tokenKey='afl_token', adminPass='afl3169';
+    let state=JSON.parse(localStorage.getItem('afl_tasks')||'[]');
+    let schedule=JSON.parse(localStorage.getItem('afl_schedule')||'[]');
+    let visitors=Number(localStorage.getItem('afl_visitors')||0);
+
+    if(!localStorage.getItem('afl_visited')){localStorage.setItem('afl_visited','1');visitors++;localStorage.setItem('afl_visitors',visitors);}
+
+    const grid=document.getElementById('taskGrid');
+    const statT=document.getElementById('statTasks');
+    const statV=document.getElementById('statVisitors');
+    const modal=document.getElementById('modal');
+    const subject=document.getElementById('subject');
+    const desc=document.getElementById('desc');
+
+    function renderTasks(){
+      grid.innerHTML='';
+      state.forEach((t,i)=>{
+        const d=document.createElement('div');
+        d.className='task';
+        d.innerHTML=`<h3>${t.subject}</h3><p>${t.desc}</p><small>${t.date||''}</small>`;
+        if(localStorage.getItem(tokenKey)){
+          const c=document.createElement('div');c.className='controls';
+          const e=document.createElement('button');e.textContent='Düzenle';e.onclick=()=>editTask(i);
+          const r=document.createElement('button');r.textContent='Sil';r.onclick=()=>removeTask(i);
+          c.append(e,r);d.append(c);
+        }
+        grid.append(d);
+      });
+      statT.textContent=`Toplam Ödev: ${state.length}`;
+      statV.textContent=`Toplam Ziyaretçi: ${visitors}`;
+    }
+    function editTask(i){
+      const t=state[i];subject.value=t.subject;desc.value=t.desc;
+      modal.classList.add('active');
+      document.getElementById('saveTask').onclick=()=>{
+        t.subject=subject.value;t.desc=desc.value;
+        localStorage.setItem('afl_tasks',JSON.stringify(state));
+        modal.classList.remove('active');renderTasks();
+      }
+    }
+    function removeTask(i){if(confirm('Silinsin mi?')){state.splice(i,1);localStorage.setItem('afl_tasks',JSON.stringify(state));renderTasks();}}
+
+    document.getElementById('addBtn').onclick=()=>{
+      if(!localStorage.getItem(tokenKey)){
+        const p=prompt('Admin şifresi:');if(p===adminPass){localStorage.setItem(tokenKey,'1');alert('Admin moduna geçildi.');}else return;
+      }
+      subject.value='';desc.value='';modal.classList.add('active');
+      document.getElementById('saveTask').onclick=()=>{
+        state.push({subject:subject.value,desc:desc.value,date:new Date().toLocaleDateString()});
+        localStorage.setItem('afl_tasks',JSON.stringify(state));
+        modal.classList.remove('active');renderTasks();
+      }
+    };
+    modal.onclick=e=>{if(e.target===modal)modal.classList.remove('active');}
+
+    // sekmeler
+    document.querySelectorAll('nav button[data-tab]').forEach(btn=>{
+      btn.onclick=()=>{
+        document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+        document.getElementById(btn.dataset.tab).classList.add('active');
+        if(btn.dataset.tab==='schedule')renderSchedule();
+        if(btn.dataset.tab==='weather')loadWeather();
+      };
+    });
+
+    // ders programı
+    function initSchedule(){
+      if(schedule.length===0){
+        for(let i=0;i<5;i++){
+          const day=[];for(let j=0;j<8;j++)day.push('—');schedule.push(day);
+        }
+        localStorage.setItem('afl_schedule',JSON.stringify(schedule));
+      }
+    }
+    function renderSchedule(){
+      initSchedule();
+      const table=document.getElementById('scheduleTable');
+      table.innerHTML='<tr><th>Gün</th>'+Array.from({length:8},(_,i)=>`<th>${i+1}</th>`).join('')+'</tr>';
+      const days=['Pzt','Sal','Çar','Per','Cum'];
+      schedule.forEach((row,ri)=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<th>${days[ri]}</th>`+row.map((c,ci)=>`<td class="editable">${c}</td>`).join('');
+        table.append(tr);
+      });
+      if(localStorage.getItem(tokenKey)){
+        table.querySelectorAll('td.editable').forEach(td=>{
+          td.onclick=()=>{
+            const r=td.parentElement.rowIndex-1;
+            const c=td.cellIndex-1;
+            const val=prompt('Ders / Hoca adı:',schedule[r][c]);
+            if(val!==null){schedule[r][c]=val;localStorage.setItem('afl_schedule',JSON.stringify(schedule));renderSchedule();}
+          };
+        });
+      }
+    }
+
+    // hava durumu
+    async function loadWeather(){
+      const grid=document.getElementById('weatherGrid');
+      const status=document.getElementById('weatherStatus');
+      status.textContent='Yükleniyor...';
+      grid.innerHTML='';
+      try{
+        const lat=36.9518,lon=30.8479;
+        const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max,weathercode&timezone=auto`);
+        const data=await res.json();
+        const days=data.daily.time.slice(0,5);
+        const maxT=data.daily.temperature_2m_max;
+        const minT=data.daily.temperature_2m_min;
+        const wind=data.daily.windspeed_10m_max;
+        const code=data.daily.weathercode;
+        status.textContent='Aksu Fen Lisesi 5 Günlük Tahmin';
+        days.forEach((d,i)=>{
+          const c=document.createElement('div');c.className='weather-card';
+          const icon=getWeatherIcon(code[i]);
+          c.innerHTML=`<img src="${icon}" alt=""><h4>${new Date(d).toLocaleDateString('tr-TR',{weekday:'short'})}</h4>
+          <p>${minT[i]}° / ${maxT[i]}°</p><p>Rüzgar ${wind[i]} km/h</p>`;
+          grid.append(c);
+        });
+      }catch(e){status.textContent='Hava durumu alınamadı';}
+    }
+    function getWeatherIcon(code){
+      if(code<3)return'https://cdn-icons-png.flaticon.com/512/3222/3222802.png';
+      if(code<60)return'https://cdn-icons-png.flaticon.com/512/1163/1163624.png';
+      return'https://cdn-icons-png.flaticon.com/512/4151/4151022.png';
+    }
+
+    renderTasks();
+  </script>
+</body>
+</html>
