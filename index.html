@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="3; url=http://84.51.52.126:2026">
-    <title>AFL 9/E | Bağlanılıyor...</title>
+    <title>AFL 9/E | Sistem Kontrolü</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
@@ -13,92 +12,38 @@
             --card-bg: rgba(20, 20, 25, 0.4);
             --card-border: rgba(255, 255, 255, 0.08);
             --text-main: #f3f4f6;
-            --accent-1: #6366f1; /* index.html'den alınan indigo rengi */
-            --accent-2: #a855f7; /* index.html'den alınan mor rengi */
-            --accent-3: #3b82f6; /* index.html'den alınan mavi rengi */
+            --accent-1: #6366f1; /* index.html indigo */
+            --accent-3: #3b82f6; /* index.html mavi */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        /* Ana tasarımdaki süzülen Aurora efektleri */
-        .aurora-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1;
-            background: #000;
-        }
-        .aurora-blob {
-            position: absolute;
-            filter: blur(80px);
-            opacity: 0.5;
-            animation: float 20s infinite alternate ease-in-out;
-        }
+        /* Aurora Arka Plan */
+        .aurora-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background: #000; }
+        .aurora-blob { position: absolute; filter: blur(80px); opacity: 0.5; animation: float 20s infinite alternate ease-in-out; }
         .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, var(--accent-1), transparent 70%); }
-        .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, var(--accent-2), transparent 70%); animation-delay: -5s; }
-        
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(100px, 50px) scale(1.2); }
+        .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, #a855f7, transparent 70%); animation-delay: -5s; }
+        @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(100px, 50px); } }
+
+        /* Glassmorphism Kart */
+        .status-card {
+            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border); border-radius: 24px; padding: 40px;
+            text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 450px; width: 90%;
         }
 
-        /* Glassmorphism yönlendirme kartı */
-        .redirect-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            max-width: 450px;
-            width: 90%;
-        }
+        h1 { font-size: 1.5rem; margin-bottom: 10px; background: linear-gradient(to right, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #status-text { color: #9ca3af; margin-bottom: 25px; font-size: 0.9rem; }
 
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            background: linear-gradient(to right, #fff, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        p { color: #9ca3af; margin-bottom: 25px; line-height: 1.6; }
-
-        .loader {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top: 3px solid var(--accent-3);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            animation: spin 1s linear infinite;
-        }
-
+        .loader { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-3); border-radius: 50%; margin: 0 auto 20px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: 0.3s;
-        }
+        .btn { display: none; padding: 12px 24px; background: linear-gradient(135deg, var(--accent-1), var(--accent-3)); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: 0.3s; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
+        
+        .offline-icon { display: none; font-size: 3rem; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -108,18 +53,53 @@
         <div class="aurora-blob blob-2"></div>
     </div>
 
-    <div class="redirect-card">
-        <div class="loader"></div>
-        <h1>Sunucuya Bağlanılıyor</h1>
-        <p>AFL 9/E Merkezi Yönetim Sistemi'ne yönlendiriliyorsunuz. Lütfen bekleyin...</p>
-        <a href="http://84.51.52.126:2026" class="btn">Hemen Bağlan</a>
+    <div class="status-card">
+        <div id="loader" class="loader"></div>
+        <div id="offline-icon" class="offline-icon">📡❌</div>
+        <h1 id="title">Sunucu Kontrol Ediliyor</h1>
+        <p id="status-text">AFL 9/E Bazzite sunucusuna bağlantı isteği gönderiliyor...</p>
+        <a href="http://84.51.52.126:2026" id="retry-btn" class="btn">Tekrar Dene</a>
     </div>
 
     <script>
-        // JS tabanlı yedek yönlendirme
-        setTimeout(function() {
-            window.location.href = "http://84.51.52.126:2026";
-        }, 2500);
+        const targetUrl = "http://84.51.52.126:2026";
+        const statusText = document.getElementById('status-text');
+        const loader = document.getElementById('loader');
+        const offlineIcon = document.getElementById('offline-icon');
+        const retryBtn = document.getElementById('retry-btn');
+        const title = document.getElementById('title');
+
+        async function checkServer() {
+            // Sunucunun /api/homeworks endpoint'ine ufak bir istek atıyoruz
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 saniye timeout
+
+                const response = await fetch(targetUrl + "/api/homeworks", {
+                    mode: 'no-cors', // Dış IP olduğu için no-cors kullanıyoruz
+                    signal: controller.signal
+                });
+
+                // Eğer buraya ulaştıysa port açık ve cevap veriyor demektir
+                title.innerText = "Bağlantı Başarılı";
+                statusText.innerText = "Sunucu aktif! Yönlendiriliyorsunuz...";
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 1000);
+
+            } catch (error) {
+                // Sunucu kapalı veya port yönlendirme hatalı
+                loader.style.display = "none";
+                offlineIcon.style.display = "block";
+                title.innerText = "Sunucu Çevrimdışı";
+                title.style.background = "linear-gradient(to right, #ff4e50, #f9d423)";
+                title.style.webkitBackgroundClip = "text";
+                statusText.innerText = "Sunucuya ulaşılamadı. Muhtemelen Bazzite PC kapalı veya port yönlendirme devre dışı.";
+                retryBtn.style.display = "inline-block";
+            }
+        }
+
+        window.onload = checkServer;
     </script>
 </body>
 </html>
